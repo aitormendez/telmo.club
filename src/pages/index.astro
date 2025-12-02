@@ -1,6 +1,5 @@
 ---
-import "../styles/fonts.css";
-import "../styles/global.css";
+import "../styles/app.css";
 import menuScript from "../scripts/menu.ts?url";
 ---
 
@@ -16,12 +15,23 @@ import menuScript from "../scripts/menu.ts?url";
     <header class="flex items-center justify-between px-5 sm:px-8 pt-6">
       <a href="/" class="text-2xl font-bold">telmo</a>
       <button id="menu-toggle" class="w-9 h-9" aria-label="Abrir menú">
-        <img id="menu-icon" src="/svg/menu.svg" alt="Menú" class="w-full h-full" />
+        <img
+          id="menu-icon"
+          src="/svg/menu.svg"
+          alt="Menú"
+          class="w-full h-full"
+        />
       </button>
     </header>
 
-    <main class="min-h-[70vh] flex items-center justify-center px-5 sm:px-8 pb-16">
-      <img src="/svg/telmo.svg" alt="Telmo sobre orca" class="max-w-lg w-full" />
+    <main
+      class="min-h-[70vh] flex items-center justify-center px-5 sm:px-8 pb-16"
+    >
+      <img
+        src="/svg/telmo.svg"
+        alt="Telmo sobre orca"
+        class="max-w-lg w-full"
+      />
     </main>
 
     <div
