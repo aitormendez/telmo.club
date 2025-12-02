@@ -9,7 +9,7 @@
 body {
   margin: 0;
   background: #fff;
-  font-family: var(--font-primary, "garagord"), serif;
+  font-family: var(--font-serif, "garagord", serif);
   font-size: clamp(17px, 2vw, 19px);
   line-height: 1.2;
   color: #000;

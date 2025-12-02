@@ -1,0 +1,183 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+
+const merzEntries = (await getCollection("merz")).sort((a, b) => {
+  const aDate = (a.data.date as Date | undefined)?.getTime?.() ?? 0;
+  const bDate = (b.data.date as Date | undefined)?.getTime?.() ?? 0;
+  return bDate - aDate;
+});
+
+const tagSet = new Set<string>();
+for (const entry of merzEntries) {
+  (entry.data.tags || []).forEach((tag) => tagSet.add(tag));
+}
+const tags = Array.from(tagSet).sort((a, b) =>
+  a.localeCompare(b, "es", { sensitivity: "base" })
+);
+---
+
+<SiteLayout title="merz | telmo">
+  <main class="pt-6 pb-12">
+    <div
+      class="mb-6 flex flex-wrap text-sky-700 text-sm tracking-wide px-5 sm:px-6"
+    >
+      <button
+        class="filter-btn active uppercase mr-2"
+        data-filter="all"
+        type="button">mostrar todo</button
+      >
+      {
+        tags.map((tag) => (
+          <button class="filter-btn mr-2" data-filter={tag} type="button">
+            {tag}
+          </button>
+        ))
+      }
+    </div>
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-0 w-full"
+    >
+      {
+        merzEntries.map((entry) => {
+          const thumb = entry.data.thumbnail;
+          const tagList = (entry.data.tags || []).join("|");
+          const href = `/merz/${entry.slug}/`;
+          return (
+            <article
+              class="tile"
+              data-tags={tagList}
+              aria-label={entry.data.title}
+            >
+              {thumb ? (
+                <a href={href} class="block w-full h-full">
+                  <img
+                    src={thumb}
+                    alt={entry.data.title}
+                    loading="lazy"
+                    class="block w-full h-full object-cover"
+                  />
+                  <span class="tile-label">{entry.data.title}</span>
+                </a>
+              ) : (
+                <div class="flex items-center justify-center w-full h-full bg-gray-100">
+                  <span class="text-center font-semibold">
+                    {entry.data.title}
+                  </span>
+                </div>
+              )}
+            </article>
+          );
+        })
+      }
+    </div>
+  </main>
+
+  <style>
+    .filter-btn {
+      border: none;
+      background: none;
+      padding: 0 2px;
+      cursor: pointer;
+      font-family: var(--font-sans, "dino", sans-serif);
+      text-transform: uppercase;
+      transition: color 150ms ease;
+    }
+    .filter-btn:hover {
+      color: #0ea5e9;
+    }
+    .filter-btn.active {
+      color: #000;
+      text-decoration: none;
+      text-underline-offset: 3px;
+    }
+    .tile {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      transition:
+        opacity 200ms ease,
+        transform 200ms ease;
+    }
+    .tile-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 6px 8px;
+      font-size: 1.6rem;
+      font-style: italic;
+      opacity: 0;
+      transition: opacity 150ms ease;
+      pointer-events: none;
+    }
+    .tile:hover .tile-label {
+      opacity: 1;
+    }
+    .tile.exit {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    .tile.enter {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  </style>
+
+  <script>
+    const FILTER_ANIM_MS = 200;
+    const tiles = Array.from(document.querySelectorAll("[data-tags]"));
+    const buttons = Array.from(document.querySelectorAll("[data-filter]"));
+    let currentFilter = "all";
+    const hideTimers = new WeakMap();
+
+    const parseTags = (el) =>
+      (el.dataset.tags || "")
+        .split("|")
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+    function applyFilter(filter) {
+      if (filter === currentFilter) return;
+      currentFilter = filter;
+      buttons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.filter === filter);
+      });
+
+      tiles.forEach((tile) => {
+        const tags = parseTags(tile);
+        const matches = filter === "all" || tags.includes(filter);
+
+        if (matches) {
+          const pending = hideTimers.get(tile);
+          if (pending) {
+            clearTimeout(pending);
+            hideTimers.delete(tile);
+          }
+          const wasHidden = tile.hasAttribute("hidden");
+          if (wasHidden) {
+            tile.classList.add("enter");
+            tile.removeAttribute("hidden");
+            requestAnimationFrame(() => {
+              tile.classList.remove("enter");
+            });
+          }
+        } else {
+          tile.classList.add("exit");
+          const timer = window.setTimeout(() => {
+            tile.setAttribute("hidden", "true");
+            tile.classList.remove("exit");
+            hideTimers.delete(tile);
+          }, FILTER_ANIM_MS);
+          hideTimers.set(tile, timer);
+        }
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applyFilter(btn.dataset.filter || "all");
+      });
+    });
+  </script>
+</SiteLayout>

@@ -3,10 +3,19 @@ title: "164"
 date: 2019-08-16
 ---
 
+import { Image } from "astro:assets";
+import tantan from "../../assets/uploads/2019/09/tantan.jpg";
+
 <p>Entran acordes de guitarra por el balcón. Es el vecino que practica. Telmo escribe en un papel. Al rato, me acerco y pregunto.</p>
 
 <p>—¿Esto qué es?</p>
 
 <p>—Estoy escribiendo la música para tocarla luego con la armónica.</p>
 
-<figure class="wp-block-image"><img src="https://telmo.club/app/uploads/2019/09/tantan-768x1024.jpg" alt="" class="wp-image-1469"/></figure>
+<Image
+  src={tantan}
+  alt="Partitura escrita por Telmo"
+  widths={[480, 768, 1024, 1400]}
+  sizes="(max-width: 768px) 100vw, 768px"
+  class="w-full h-auto"
+/>

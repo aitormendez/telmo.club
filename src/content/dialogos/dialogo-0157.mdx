@@ -3,6 +3,9 @@ title: "152"
 date: 2019-03-17
 ---
 
+import { Image } from "astro:assets";
+import ayElCulito from "../../assets/uploads/2019/07/ay-el-culito.jpg";
+
 <p>Le escucho cantar alegremente mentras preparo la cena. Acaba de salir del baño y aún está desnudo.</p>
 
 <p>—¡Papá, papá! ¡Dame un lápiz y un papel, rápido!</p>
@@ -11,7 +14,13 @@ date: 2019-03-17
 
 <p>—Para apuntar la canción y que no se me olvide.</p>
 
-<figure class="wp-block-image"><img src="https://telmo.club/app/uploads/2019/07/ay-el-culito-859x1024.jpg" alt="" class="wp-image-1451"/></figure>
+<Image
+  src={ayElCulito}
+  alt='Canción "Ay, el culito"'
+  widths={[480, 768, 1024, 1400]}
+  sizes="(max-width: 768px) 100vw, 768px"
+  class="w-full h-auto"
+/>
 
 <p>Ay, el culito.<br />Ay, el culito.<br />Se cagó en toda su puta madre.<br />Ne, ne.<br />Pon, pon,<br />Pin, pin.<br />Ay, el culito.<br />Ay el culito.</p>
 

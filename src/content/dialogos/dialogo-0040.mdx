@@ -3,6 +3,9 @@ title: "40"
 date: 2015-12-15
 ---
 
+import { Image } from "astro:assets";
+import osmc from "../../assets/uploads/2016/05/osmc-1.png";
+
 Tenemos en casa un media center con OSMC instalado que, cuando se enciende, tiene este aspecto, con una estructura geométrica en tonos azules. Cuando Telmo lo ve, se entusiasma y dice:
 
 —¡El sistema operativo para ver películas!  
@@ -11,4 +14,10 @@ Ayer le puse unos calcetines de rombos azules y, señalándose los pies, pregunt
 
 —¿Papá, esto es el sistema operativo?  
 
-<img src="http://telmo.club/app/uploads/2016/05/osmc-1-1024x522.png" alt="osmc" width="1024" height="522" class="alignnone size-large wp-image-682" />
+<Image
+  src={osmc}
+  alt="Interfaz de OSMC"
+  widths={[480, 768, 1024, 1400]}
+  sizes="(max-width: 768px) 100vw, 768px"
+  class="w-full h-auto"
+/>

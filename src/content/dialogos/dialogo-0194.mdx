@@ -3,8 +3,17 @@ title: "191"
 date: 2020-06-29
 ---
 
+import { Image } from "astro:assets";
+import loop from "../../assets/uploads/2020/06/loop.png";
+
 <p>Hablamos de los dibujos de Simon Stalenhag y le cuento a Telmo una de las "historias del loop" en la que dos amigos juegan en el bosque y encuentran una esfera con una compuerta. Uno de ellos se mete dentro y descubre que la esfera tiene el poder de cambiar una persona por otra. Cuando sale de la esfera, él ya no es él, sino su amigo. Y su amigo es él. La esfera ha metido la mente de uno en el cuerpo del otro y viceversa.</p>
 
 <p>Le pregunto a Telmo qué pasaría si nos encontráramos los dos con la esfera. Tras meditarlo un rato, me dice que sería un plan perfecto. Él dentro de mi cuerpo y yo en el suyo. Él podría jugar al ordenador y comer lo que le diera la gana, mientras yo tendría que ir al colegio y hacer los deberes.</p>
 
-<figure class="wp-block-image"><img src="https://telmo.club/app/uploads/2020/06/loop-1024x564.png" alt="" class="wp-image-1526"/></figure>
+<Image
+  src={loop}
+  alt="Ilustración de Simon Stålenhag"
+  widths={[480, 768, 1024, 1400]}
+  sizes="(max-width: 768px) 100vw, 768px"
+  class="w-full h-auto"
+/>

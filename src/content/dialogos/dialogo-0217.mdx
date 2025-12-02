@@ -3,6 +3,9 @@ title: "214"
 date: 2022-08-14
 ---
 
+import { Image } from "astro:assets";
+import capturaLoop from "../../assets/uploads/2022/08/Captura-de-pantalla-2022-08-14-a-las-19.16.40.png";
+
 <p>Me llama Telmo a su habitación al grito de</p>
 
 <p>—¡Papá, a ver cómo reaccionas a esto!</p>
@@ -29,4 +32,10 @@ https://youtu.be/3Ce7-iuZDKU
 
 <p>En el minuto 1:27 se ve este frame explicativo.</p>
 
-<figure class="wp-block-image size-large"><img src="https://telmo.club/app/uploads/2022/08/Captura-de-pantalla-2022-08-14-a-las-19.16.40-1024x551.png" alt="" class="wp-image-1650"/></figure>
+<Image
+  src={capturaLoop}
+  alt="Frame explicativo del vídeo en el minuto 1:27"
+  widths={[480, 768, 1024, 1400]}
+  sizes="(max-width: 768px) 100vw, 768px"
+  class="w-full h-auto"
+/>

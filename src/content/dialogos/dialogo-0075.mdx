@@ -3,8 +3,17 @@ title: "74"
 date: 2016-06-12
 ---
 
+import { Image } from "astro:assets";
+import arboles from "../../assets/uploads/2016/06/arboles-con-dos-piernas.jpg";
+
 Mirando los pinos retorcidos por el viento.
 
 — Papá, los árboles tienen dos piernas.  
 
-<img src="http://telmo.club/app/uploads/2016/06/arboles-con-dos-piernas-1024x576.jpg" alt="arboles-con-dos-piernas" width="1024" height="576" class="alignnone size-large wp-image-877" />
+<Image
+  src={arboles}
+  alt="Árboles con dos piernas"
+  widths={[480, 768, 1024, 1400]}
+  sizes="(max-width: 768px) 100vw, 768px"
+  class="w-full h-auto"
+/>

@@ -3,4 +3,6 @@
   --text-lg--line-height: 1.2;
   --text-xl--line-height: 1.2;
   --text-2xl--line-height: 1.2;
+  --font-sans: "dino", sans-serif;
+  --font-serif: "garagord", serif;
 }
