@@ -1,54 +1,10 @@
 ---
 import "../styles/app.css";
-import menuScript from "../scripts/menu.ts?url";
+import SiteLayout from "../layouts/SiteLayout.astro";
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>telmo | las cosas de telmo</title>
-  </head>
-  <body class="min-h-screen bg-white text-black">
-    <header
-      class="relative z-20 flex items-center justify-between px-5 sm:px-6 pt-5"
-    >
-      <a href="/" class="text-2xl font-bold">telmo</a>
-      <button id="menu-toggle" class="w-9 h-9" aria-label="Abrir menú">
-        <img
-          id="menu-icon"
-          src="/svg/menu.svg"
-          alt="Menú"
-          class="w-full h-full"
-        />
-      </button>
-    </header>
-
-    <main class="flex items-center justify-center px-5 sm:px-6 pt-16">
-      <img
-        src="/svg/telmo.svg"
-        alt="Telmo sobre orca"
-        class="max-w-lg w-full"
-      />
-    </main>
-
-    <div
-      id="nav-overlay"
-      class="fixed inset-0 z-10 bg-white/95 backdrop-blur-sm px-5 sm:px-6 py-16 flex flex-col"
-      style="display:none; opacity:0; transform: translateX(-100%);"
-    >
-      <nav class="flex flex-col gap-3 text-sky-700 text-2xl leading-none">
-        <a href="/merz">merz</a>
-        <a href="/mapa">mapa</a>
-        <a href="/conversaciones">conversaciones</a>
-        <a href="/historias">historias</a>
-        <a href="/projects">Proyectos</a>
-        <a href="/que">¿qué?</a>
-      </nav>
-    </div>
-
-    <script type="module" src={menuScript}></script>
-  </body>
-</html>
+<SiteLayout title="telmo | las cosas de telmo">
+  <main class="flex items-center justify-center px-5 sm:px-6 pt-16">
+    <img src="/svg/telmo.svg" alt="Telmo sobre orca" class="max-w-lg w-full" />
+  </main>
+</SiteLayout>

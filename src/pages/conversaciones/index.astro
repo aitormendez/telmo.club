@@ -1,6 +1,6 @@
 ---
+import SiteLayout from "../../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
-import Column from "../../layouts/Column.astro";
 
 const dob = new Date("2013-02-16");
 
@@ -27,7 +27,7 @@ const groups: Group[] = [];
 
 for (const item of rendered) {
   const year = item.date.getFullYear();
-  const month = item.date.getMonth(); // 0-11
+  const month = item.date.getMonth();
   const monthName = item.date.toLocaleString("es-ES", { month: "long" });
   const key = `${year}-${month}`;
   let group = groups.find((g) => `${g.year}-${g.month}` === key);
@@ -38,11 +38,10 @@ for (const item of rendered) {
   group.entries.push(item);
 }
 
-const formatDate = (d: Date) =>
-  d.toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
-
 const diffAge = (date: Date) => {
-  let months = (date.getFullYear() - dob.getFullYear()) * 12 + (date.getMonth() - dob.getMonth());
+  let months =
+    (date.getFullYear() - dob.getFullYear()) * 12 +
+    (date.getMonth() - dob.getMonth());
   if (date.getDate() < dob.getDate()) months -= 1;
   const years = Math.floor(months / 12);
   const remMonths = months - years * 12;
@@ -50,34 +49,59 @@ const diffAge = (date: Date) => {
 };
 ---
 
-<Column title="Conversaciones">
-  <section class="space-y-8">
-    {groups.map((group, idx) => {
-      const prevYear = groups[idx - 1]?.year;
-      const showYear = prevYear !== group.year;
-      const ageLabel = diffAge(group.entries[0].date);
-      return (
-        <div class="space-y-4">
-          {showYear && <div class="text-sm font-semibold text-neutral-600">{group.year}</div>}
-          <div class="flex items-baseline gap-3">
-            <h2 class="text-lg font-semibold capitalize leading-tight">{group.monthName}</h2>
-            <span class="text-xs text-neutral-500">
-              Telmo tiene {ageLabel.years} años y {ageLabel.months} meses
-            </span>
-          </div>
-          <div class="space-y-6">
-            {group.entries.map((item) => (
-              <article class="dash-sep pb-4">
-                <h3 class="text-sm font-semibold mb-1">{item.entry.data.title}</h3>
-                <p class="text-xs text-neutral-500 mb-2">{formatDate(item.date)}</p>
-                <div class="prose prose-sm max-w-none">
-                  <item.Content />
+<SiteLayout title="Conversaciones | telmo">
+  <main class="w-full py-10">
+    {
+      groups.map((group, idx) => {
+        const prevYear = groups[idx - 1]?.year;
+        const showYear = prevYear !== group.year;
+        const ageLabel = diffAge(group.entries[0].date);
+        return (
+          <section class="w-full">
+            <div class="mx-auto">
+              {showYear && (
+                <div class="dash-line mb-2" style="--dash-gap: 1rem">
+                  <div class="px-5 sm:px-6">
+                    <div class="text-5xl">{group.year}</div>
+                  </div>
                 </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      );
-    })}
-  </section>
-</Column>
+              )}
+
+              <div class="dash-line mb-10" style="--dash-gap: 1rem">
+                <div class="text-3xl px-5 sm:px-6">
+                  <div>{group.monthName}</div>
+                  <div>
+                    telmo tiene {ageLabel.years} años y {ageLabel.months} meses
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                {group.entries.map((item, entryIdx) => {
+                  const isLast = entryIdx === group.entries.length - 1;
+                  return (
+                    <article
+                      class={`dash-line ${isLast ? "mb-2" : "mb-10"}`}
+                      style="--dash-gap: 3rem"
+                    >
+                      <h3 class="mb-4 px-5 sm:px-6 text-xl sm:absolute">
+                        <a href={`/${item.entry.slug}`} class="">
+                          {item.entry.data.title}
+                        </a>
+                      </h3>
+                      <div class="max-w-3xl mx-auto px-5 sm:px-6">
+                        <div class="text-xl max-w-none">
+                          <item.Content />
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        );
+      })
+    }
+  </main>
+</SiteLayout>
