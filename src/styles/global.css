@@ -89,3 +89,10 @@ code {
     line-height: 1.2;
   }
 }
+
+.dash-sep {
+  background-image: url("/svg/dashed-black.svg");
+  background-repeat: repeat-x;
+  background-size: auto 6px;
+  background-position: bottom left;
+}

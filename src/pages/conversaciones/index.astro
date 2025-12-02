@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+import Column from "../../layouts/Column.astro";
+
+const dob = new Date("2013-02-16");
+
+const dialogos = await getCollection("dialogos");
+
+const rendered = await Promise.all(
+  dialogos.map(async (entry) => {
+    const { Content, frontmatter } = await entry.render();
+    const date = new Date(entry.data.date);
+    return { entry, Content, frontmatter, date };
+  })
+);
+
+rendered.sort((a, b) => a.date.getTime() - b.date.getTime());
+
+type Group = {
+  year: number;
+  month: number;
+  monthName: string;
+  entries: typeof rendered;
+};
+
+const groups: Group[] = [];
+
+for (const item of rendered) {
+  const year = item.date.getFullYear();
+  const month = item.date.getMonth(); // 0-11
+  const monthName = item.date.toLocaleString("es-ES", { month: "long" });
+  const key = `${year}-${month}`;
+  let group = groups.find((g) => `${g.year}-${g.month}` === key);
+  if (!group) {
+    group = { year, month, monthName, entries: [] };
+    groups.push(group);
+  }
+  group.entries.push(item);
+}
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
+
+const diffAge = (date: Date) => {
+  let months = (date.getFullYear() - dob.getFullYear()) * 12 + (date.getMonth() - dob.getMonth());
+  if (date.getDate() < dob.getDate()) months -= 1;
+  const years = Math.floor(months / 12);
+  const remMonths = months - years * 12;
+  return { years, months: remMonths };
+};
+---
+
+<Column title="Conversaciones">
+  <section class="space-y-8">
+    {groups.map((group, idx) => {
+      const prevYear = groups[idx - 1]?.year;
+      const showYear = prevYear !== group.year;
+      const ageLabel = diffAge(group.entries[0].date);
+      return (
+        <div class="space-y-4">
+          {showYear && <div class="text-sm font-semibold text-neutral-600">{group.year}</div>}
+          <div class="flex items-baseline gap-3">
+            <h2 class="text-lg font-semibold capitalize leading-tight">{group.monthName}</h2>
+            <span class="text-xs text-neutral-500">
+              Telmo tiene {ageLabel.years} años y {ageLabel.months} meses
+            </span>
+          </div>
+          <div class="space-y-6">
+            {group.entries.map((item) => (
+              <article class="dash-sep pb-4">
+                <h3 class="text-sm font-semibold mb-1">{item.entry.data.title}</h3>
+                <p class="text-xs text-neutral-500 mb-2">{formatDate(item.date)}</p>
+                <div class="prose prose-sm max-w-none">
+                  <item.Content />
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+  </section>
+</Column>
