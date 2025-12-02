@@ -5,9 +5,12 @@ import sitemap from '@astrojs/sitemap';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import mdx from '@astrojs/mdx';
+
 // https://astro.build/config
 export default defineConfig({
-  integrations: [sitemap()],
+  site: 'https://telmo.club',
+  integrations: [sitemap(), mdx()],
 
   vite: {
     plugins: [tailwindcss()]

@@ -10,19 +10,19 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content, frontmatter } = await entry.render();
+const { Content, frontmatter = {} } = await entry.render();
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{frontmatter.title}</title>
+    <title>{frontmatter.title ?? ""}</title>
   </head>
   <body>
     <main>
-      <h1>{frontmatter.title}</h1>
-      {frontmatter.date && (
+      <h1>{frontmatter.title ?? ""}</h1>
+      {frontmatter.date && typeof frontmatter.date.toISOString === "function" && (
         <p>{frontmatter.date.toISOString().slice(0, 10)}</p>
       )}
       <article>
