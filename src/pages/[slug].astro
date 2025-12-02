@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Column from "../layouts/Column.astro";
 
 export async function getStaticPaths() {
   const dialogos = await getCollection("dialogos");
@@ -13,21 +14,14 @@ const { entry } = Astro.props;
 const { Content, frontmatter = {} } = await entry.render();
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{frontmatter.title ?? ""}</title>
-  </head>
-  <body>
-    <main>
-      <h1>{frontmatter.title ?? ""}</h1>
-      {frontmatter.date && typeof frontmatter.date.toISOString === "function" && (
-        <p>{frontmatter.date.toISOString().slice(0, 10)}</p>
-      )}
-      <article>
-        <Content />
-      </article>
-    </main>
-  </body>
-</html>
+<Column title={frontmatter.title}>
+  <h1 class="text-3xl font-bold mb-4">{frontmatter.title ?? ""}</h1>
+  {frontmatter.date && typeof frontmatter.date.toISOString === "function" && (
+    <p class="text-sm text-neutral-600 mb-6">
+      {frontmatter.date.toISOString().slice(0, 10)}
+    </p>
+  )}
+  <article class="prose max-w-none">
+    <Content />
+  </article>
+</Column>
