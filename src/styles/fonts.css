@@ -1,0 +1,87 @@
+@font-face {
+  font-family: "garagord";
+  src: url("/fonts/Garagord-Bold.woff2") format("woff2"), url("/fonts/Garagord-Bold.woff") format("woff");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "garagord";
+  src: url("/fonts/Garagord-BoldItalic.woff2") format("woff2"), url("/fonts/Garagord-BoldItalic.woff") format("woff");
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "garagord";
+  src: url("/fonts/Garagord-Italic.woff2") format("woff2"), url("/fonts/Garagord-Italic.woff") format("woff");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "garagord";
+  src: url("/fonts/Garagord-Regular.woff2") format("woff2"), url("/fonts/Garagord-Regular.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "dino";
+  src: url("/fonts/dino-heavy-webfont.woff2") format("woff2"), url("/fonts/dino-heavy-webfont.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "dino";
+  src: url("/fonts/dino-heavyitalic-webfont.woff2") format("woff2"), url("/fonts/dino-heavyitalic-webfont.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "dino";
+  src: url("/fonts/dino-regular-webfont.woff2") format("woff2"), url("/fonts/dino-regular-webfont.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "dino";
+  src: url("/fonts/dino-italic-webfont.woff2") format("woff2"), url("/fonts/dino-italic-webfont.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "dino";
+  src: url("/fonts/dino-light-webfont.woff2") format("woff2"), url("/fonts/dino-light-webfont.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "dino";
+  src: url("/fonts/dino-lightitalic-webfont.woff2") format("woff2"), url("/fonts/dino-lightitalic-webfont.woff") format("woff");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --font-primary: "garagord", serif;
+}
+
+body {
+  font-family: var(--font-primary);
+}
