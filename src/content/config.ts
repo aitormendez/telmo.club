@@ -42,11 +42,11 @@ const projects = defineCollection({
   }),
 });
 
-const pages = defineCollection({
+const sitePages = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
   }),
 });
 
-export const collections = { merz, dialogos, cuentos, projects, pages };
+export const collections = { merz, dialogos, cuentos, projects, sitePages };

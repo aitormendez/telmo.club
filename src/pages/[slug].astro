@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const dialogos = await getCollection("dialogos");
+  return dialogos.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, frontmatter } = await entry.render();
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{frontmatter.title}</title>
+  </head>
+  <body>
+    <main>
+      <h1>{frontmatter.title}</h1>
+      {frontmatter.date && (
+        <p>{frontmatter.date.toISOString().slice(0, 10)}</p>
+      )}
+      <article>
+        <Content />
+      </article>
+    </main>
+  </body>
+</html>
