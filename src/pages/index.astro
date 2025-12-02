@@ -1,17 +1,69 @@
 ---
 import "../styles/fonts.css";
 import "../styles/global.css";
+import { gsap } from "gsap";
 ---
 
 <html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>telmo | las cosas de telmo</title>
+  </head>
+  <body class="min-h-screen bg-white text-black">
+    <header class="flex items-center justify-between px-5 sm:px-8 pt-6">
+      <a href="/" class="text-2xl font-bold">telmo</a>
+      <button id="menu-toggle" class="w-9 h-9" aria-label="Abrir menú">
+        <img id="menu-icon" src="/svg/menu.svg" alt="Menú" class="w-full h-full" />
+      </button>
+    </header>
+
+    <main class="min-h-[70vh] flex items-center justify-center px-5 sm:px-8 pb-16">
+      <img src="/svg/telmo.svg" alt="Telmo sobre orca" class="max-w-lg w-full" />
+    </main>
+
+    <div
+      id="nav-overlay"
+      class="fixed inset-0 bg-white/95 backdrop-blur-sm px-8 sm:px-12 py-10 flex flex-col"
+      style="display:none; opacity:0;"
+    >
+      <div class="flex justify-between items-start mb-12">
+        <a href="/" class="text-2xl font-bold">telmo</a>
+        <button id="menu-close" class="w-9 h-9" aria-label="Cerrar menú">
+          <img src="/svg/cerrar.svg" alt="Cerrar" class="w-full h-full" />
+        </button>
+      </div>
+      <nav class="flex flex-col gap-3 text-sky-700 text-xl">
+        <a href="/merz">merz</a>
+        <a href="/mapa">mapa</a>
+        <a href="/conversaciones">conversaciones</a>
+        <a href="/historias">historias</a>
+        <a href="/projects">Proyectos</a>
+        <a href="/que">¿qué?</a>
+      </nav>
+    </div>
+
+    <script>
+      const overlay = document.getElementById('nav-overlay');
+      const btnOpen = document.getElementById('menu-toggle');
+      const btnClose = document.getElementById('menu-close');
+      const tl = gsap.timeline({ paused: true, defaults: { duration: 0.25, ease: 'power1.out' } });
+
+      tl.set(overlay, { display: 'flex' })
+        .fromTo(overlay, { opacity: 0 }, { opacity: 1 })
+        .fromTo(overlay.querySelectorAll('nav a'), { y: 10, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.04 }, '-=0.15');
+
+      btnOpen?.addEventListener('click', () => {
+        tl.play(0);
+      });
+      btnClose?.addEventListener('click', () => {
+        tl.reverse();
+        tl.eventCallback('onReverseComplete', () => {
+          overlay.style.display = 'none';
+        });
+      });
+    </script>
+  </body>
 </html>
