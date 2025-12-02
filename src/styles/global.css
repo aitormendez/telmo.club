@@ -17,7 +17,7 @@ body {
 
 a {
   color: inherit;
-  text-decoration: underline;
+  text-decoration: none;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
@@ -83,4 +83,15 @@ code {
   background: #f5f5f5;
   padding: 0.1em 0.25em;
   border-radius: 3px;
+}
+
+@layer base {
+  body {
+    line-height: 1.4;
+  }
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+  }
 }

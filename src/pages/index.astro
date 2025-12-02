@@ -12,15 +12,10 @@ import menuScript from "../scripts/menu.ts?url";
     <title>telmo | las cosas de telmo</title>
   </head>
   <body class="min-h-screen bg-white text-black">
-    <header class="flex items-center justify-between px-5 sm:px-8 pt-6">
+    <header class="relative z-20 flex items-center justify-between px-5 sm:px-8 pt-5">
       <a href="/" class="text-2xl font-bold">telmo</a>
       <button id="menu-toggle" class="w-9 h-9" aria-label="Abrir menú">
-        <img
-          id="menu-icon"
-          src="/svg/menu.svg"
-          alt="Menú"
-          class="w-full h-full"
-        />
+        <img id="menu-icon" src="/svg/menu.svg" alt="Menú" class="w-full h-full" />
       </button>
     </header>
 
@@ -36,16 +31,12 @@ import menuScript from "../scripts/menu.ts?url";
 
     <div
       id="nav-overlay"
-      class="fixed inset-0 bg-white/95 backdrop-blur-sm px-8 sm:px-12 py-10 flex flex-col"
-      style="display:none; opacity:0;"
+      class="fixed inset-0 z-10 bg-white/95 backdrop-blur-sm px-8 sm:px-12 py-16 flex flex-col"
+      style="display:none; opacity:0; transform: translateX(-100%);"
     >
-      <div class="flex justify-between items-start mb-12">
-        <a href="/" class="text-2xl font-bold">telmo</a>
-        <button id="menu-close" class="w-9 h-9" aria-label="Cerrar menú">
-          <img src="/svg/cerrar.svg" alt="Cerrar" class="w-full h-full" />
-        </button>
-      </div>
-      <nav class="flex flex-col gap-3 text-sky-700 text-xl">
+      <nav
+        class="flex flex-col gap-3 text-sky-700 text-2xl leading-[1.2]"
+      >
         <a href="/merz">merz</a>
         <a href="/mapa">mapa</a>
         <a href="/conversaciones">conversaciones</a>
