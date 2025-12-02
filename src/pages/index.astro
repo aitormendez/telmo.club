@@ -1,7 +1,6 @@
 ---
 import "../styles/fonts.css";
 import "../styles/global.css";
-import { gsap } from "gsap";
 ---
 
 <html lang="es">
@@ -45,7 +44,9 @@ import { gsap } from "gsap";
       </nav>
     </div>
 
-    <script>
+    <script type="module">
+      import { gsap } from "gsap";
+
       const overlay = document.getElementById('nav-overlay');
       const btnOpen = document.getElementById('menu-toggle');
       const btnClose = document.getElementById('menu-close');
