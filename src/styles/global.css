@@ -71,12 +71,6 @@ ol {
   margin: 0 0 1rem;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
