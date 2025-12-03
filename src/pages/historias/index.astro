@@ -2,9 +2,9 @@
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 
-const cuentos = await getCollection("cuentos");
+const historias = await getCollection("historias");
 
-const ordered = cuentos
+const ordered = historias
   .filter((c) => c.data.title)
   .sort((a, b) => {
     const da = a.data.date ? a.data.date.getTime() : 0;

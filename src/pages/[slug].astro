@@ -34,17 +34,19 @@ const age = date && typeof date.getMonth === "function" ? diffAge(date) : null;
   <main class="min-h-[70vh] px-5 sm:px-6 py-10 flex justify-center">
     <div class="w-full max-w-3xl space-y-4">
       <h1 class="text-3xl font-bold">{frontmatter.title ?? ""}</h1>
-      {date && typeof date.toISOString === "function" && (
-        <div class="space-y-1 text-sm text-neutral-600">
-          <p>{date.toISOString().slice(0, 10)}</p>
-          {age && (
-            <p>
-              Telmo tiene {pluralize(age.years, "año", "años")} y{" "}
-              {pluralize(age.months, "mes", "meses")}
-            </p>
-          )}
-        </div>
-      )}
+      {
+        date && typeof date.toISOString === "function" && (
+          <div class="space-y-1 text-sm">
+            <p>{date.toISOString().slice(0, 10)}</p>
+            {age && (
+              <p>
+                Telmo tiene {pluralize(age.years, "año", "años")} y{" "}
+                {pluralize(age.months, "mes", "meses")}
+              </p>
+            )}
+          </div>
+        )
+      }
       <article class="prose max-w-none">
         <Content />
       </article>

@@ -26,7 +26,7 @@ const dialogos = defineCollection({
   }),
 });
 
-const cuentos = defineCollection({
+const historias = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
@@ -49,4 +49,4 @@ const sitePages = defineCollection({
   }),
 });
 
-export const collections = { merz, dialogos, cuentos, projects, sitePages };
+export const collections = { merz, dialogos, historias, projects, sitePages };

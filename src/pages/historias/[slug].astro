@@ -3,8 +3,8 @@ import { getCollection } from "astro:content";
 import SiteLayout from "../../layouts/SiteLayout.astro";
 
 export async function getStaticPaths() {
-  const cuentos = await getCollection("cuentos");
-  return cuentos.map((entry) => ({
+  const historias = await getCollection("historias");
+  return historias.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
   }));
@@ -13,6 +13,13 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 const date = entry.data.date;
+const formattedDate =
+  date &&
+  date.toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 ---
 
 <SiteLayout title={`${entry.data.title} | historias`}>
@@ -20,11 +27,7 @@ const date = entry.data.date;
     <article class="w-full max-w-3xl space-y-4">
       <div class="space-y-1">
         <h1 class="text-4xl leading-tight">{entry.data.title}</h1>
-        {date && (
-          <p class="text-sm text-neutral-600">
-            {date.toISOString().slice(0, 10)}
-          </p>
-        )}
+        {formattedDate && <p class="">{formattedDate}</p>}
       </div>
       <div class="prose max-w-none">
         <Content />
