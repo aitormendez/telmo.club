@@ -2,6 +2,20 @@
 import { getCollection } from "astro:content";
 import SiteLayout from "../layouts/SiteLayout.astro";
 
+const dob = new Date("2013-02-16");
+const diffAge = (date: Date) => {
+  let months =
+    (date.getFullYear() - dob.getFullYear()) * 12 +
+    (date.getMonth() - dob.getMonth());
+  if (date.getDate() < dob.getDate()) months -= 1;
+  const years = Math.floor(months / 12);
+  const remMonths = months - years * 12;
+  return { years, months: remMonths };
+};
+
+const pluralize = (n: number, singular: string, plural: string) =>
+  `${n} ${n === 1 ? singular : plural}`;
+
 export async function getStaticPaths() {
   const dialogos = await getCollection("dialogos");
   return dialogos.map((entry) => ({
@@ -12,16 +26,24 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content, frontmatter = {} } = await entry.render();
+const date = frontmatter.date;
+const age = date && typeof date.getMonth === "function" ? diffAge(date) : null;
 ---
 
 <SiteLayout title={frontmatter.title ?? "telmo"}>
   <main class="min-h-[70vh] px-5 sm:px-6 py-10 flex justify-center">
     <div class="w-full max-w-3xl space-y-4">
       <h1 class="text-3xl font-bold">{frontmatter.title ?? ""}</h1>
-      {frontmatter.date && typeof frontmatter.date.toISOString === "function" && (
-        <p class="text-sm text-neutral-600">
-          {frontmatter.date.toISOString().slice(0, 10)}
-        </p>
+      {date && typeof date.toISOString === "function" && (
+        <div class="space-y-1 text-sm text-neutral-600">
+          <p>{date.toISOString().slice(0, 10)}</p>
+          {age && (
+            <p>
+              Telmo tiene {pluralize(age.years, "año", "años")} y{" "}
+              {pluralize(age.months, "mes", "meses")}
+            </p>
+          )}
+        </div>
       )}
       <article class="prose max-w-none">
         <Content />

@@ -47,6 +47,9 @@ const diffAge = (date: Date) => {
   const remMonths = months - years * 12;
   return { years, months: remMonths };
 };
+
+const pluralize = (n: number, singular: string, plural: string) =>
+  `${n} ${n === 1 ? singular : plural}`;
 ---
 
 <SiteLayout title="Conversaciones | telmo">
@@ -71,7 +74,8 @@ const diffAge = (date: Date) => {
                 <div class="text-3xl px-5 sm:px-6">
                   <div>{group.monthName}</div>
                   <div>
-                    telmo tiene {ageLabel.years} años y {ageLabel.months} meses
+                    telmo tiene {pluralize(ageLabel.years, "año", "años")} y{" "}
+                    {pluralize(ageLabel.months, "mes", "meses")}
                   </div>
                 </div>
               </div>
