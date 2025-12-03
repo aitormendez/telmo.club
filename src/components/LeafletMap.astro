@@ -53,7 +53,7 @@ const markersJson = hasMarkers ? JSON.stringify(markers) : undefined;
         data-markers={markersJson}
         style={height ? `height:${height};` : undefined}
       />
-      <script type="module">
+      <script is:inline type="module">
         import L from "leaflet";
 
         const stadiaKey = import.meta.env.PUBLIC_STADIA_API_KEY;
