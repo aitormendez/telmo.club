@@ -1,6 +1,5 @@
 ---
 import "leaflet/dist/leaflet.css";
-import leafletScript from "../scripts/leaflet-map.ts?url";
 
 interface Marker {
   lat: number;
@@ -54,7 +53,9 @@ const markersJson = hasMarkers ? JSON.stringify(markers) : undefined;
         data-markers={markersJson}
         style={height ? `height:${height};` : undefined}
       />
-      <script type="module" src={leafletScript} />
+      <script type="module">
+        import "/src/scripts/leaflet-map.ts";
+      </script>
     </>
   ) : (
     <div class="leaflet-map map-fallback">Sin mapa</div>
