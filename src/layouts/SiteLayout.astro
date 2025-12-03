@@ -16,10 +16,19 @@ const { title = "telmo" } = Astro.props as Props;
     <title>{title}</title>
   </head>
   <body class="bg-white text-black antialiased">
-    <header class="relative z-20 flex items-center justify-between px-5 sm:px-6 pt-5">
-      <a href="/" class="text-2xl font-bold">telmo</a>
+    <header
+      class="relative z-20 flex items-center justify-between px-5 sm:px-6 pt-5"
+    >
+      <a href="/" class="text-2xl font-bold !text-black hover:!text-sky-700"
+        >telmo</a
+      >
       <button id="menu-toggle" class="w-9 h-9" aria-label="Abrir menú">
-        <img id="menu-icon" src="/svg/menu.svg" alt="Menú" class="w-full h-full" />
+        <img
+          id="menu-icon"
+          src="/svg/menu.svg"
+          alt="Menú"
+          class="w-full h-full"
+        />
       </button>
     </header>
 
