@@ -1,0 +1,44 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+import LeafletMap from "../components/LeafletMap.astro";
+
+const merzEntries = await getCollection("merz");
+const markers = merzEntries
+  .map((entry) => ({
+    lat: entry.data.mapa?.lat,
+    lng: entry.data.mapa?.lng,
+    title: entry.data.title,
+    slug: entry.slug,
+  }))
+  .filter(
+    (m): m is { lat: number; lng: number; title: string; slug: string } =>
+      typeof m.lat === "number" &&
+      typeof m.lng === "number" &&
+      !Number.isNaN(m.lat) &&
+      !Number.isNaN(m.lng)
+  );
+---
+
+<SiteLayout title="Mapa | telmo">
+  <main class="mt-0">
+    <div class="map-shell">
+      <LeafletMap markers={markers} zoom={4} full />
+    </div>
+  </main>
+</SiteLayout>
+
+<style>
+  .map-shell {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .map-shell :global(.leaflet-map) {
+    height: 100%;
+    width: 100%;
+  }
+</style>
