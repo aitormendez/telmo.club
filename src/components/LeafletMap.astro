@@ -54,7 +54,7 @@ const markersJson = hasMarkers ? JSON.stringify(markers) : undefined;
         style={height ? `height:${height};` : undefined}
       />
       <script is:inline type="module">
-        import L from "leaflet";
+        import L from "https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js";
 
         const stadiaKey = import.meta.env.PUBLIC_STADIA_API_KEY;
         const stamenBase =
