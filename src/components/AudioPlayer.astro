@@ -1,0 +1,67 @@
+---
+import "vidstack/styles/defaults.css";
+import "vidstack/styles/community-skin/audio.css";
+
+interface Props {
+  src: string;
+  title?: string;
+}
+
+const { src, title } = Astro.props;
+const fallbackId = `audio-fallback-${Math.random().toString(36).slice(2)}`;
+---
+
+<media-player
+  src={src}
+  title={title}
+  stream-type="on-demand"
+  view-type="audio"
+  class="audio-player"
+  controls
+>
+  <media-provider />
+  <media-community-skin></media-community-skin>
+</media-player>
+
+<audio
+  id={fallbackId}
+  controls
+  src={src}
+  class="audio-fallback"
+  preload="none"
+>
+  Tu navegador no soporta audio embebido.
+</audio>
+
+<script type="module" data-fallback={fallbackId}>
+  import "vidstack/define/media-player.js";
+  import "vidstack/define/media-community-skin.js";
+
+  const fallbackId = document.currentScript?.dataset.fallback;
+  const fallback = fallbackId
+    ? document.getElementById(fallbackId)
+    : null;
+  if (fallback) {
+    const hideFallback = () => {
+      fallback.style.display = "none";
+    };
+    if (customElements.get("media-player")) {
+      hideFallback();
+    } else {
+      customElements.whenDefined("media-player").then(hideFallback).catch(() => {});
+    }
+  }
+</script>
+
+<style>
+  .audio-player {
+    width: 100%;
+    display: block;
+    margin: 1.25rem 0;
+  }
+  .audio-fallback {
+    width: 100%;
+    margin: 1.25rem 0;
+    display: block;
+  }
+</style>
