@@ -10,9 +10,18 @@ const markers = merzEntries
     lng: entry.data.mapa?.lng,
     title: entry.data.title,
     slug: entry.slug,
+    thumbnail: entry.data.thumbnail,
   }))
   .filter(
-    (m): m is { lat: number; lng: number; title: string; slug: string } =>
+    (
+      m
+    ): m is {
+      lat: number;
+      lng: number;
+      title: string;
+      slug: string;
+      thumbnail?: string;
+    } =>
       typeof m.lat === "number" &&
       typeof m.lng === "number" &&
       !Number.isNaN(m.lat) &&

@@ -6,6 +6,7 @@ interface Marker {
   lng: number;
   title?: string;
   slug?: string;
+  thumbnail?: string;
 }
 
 interface Props {
@@ -53,7 +54,7 @@ const markersJson = hasMarkers ? JSON.stringify(markers) : undefined;
         data-markers={markersJson}
         style={height ? `height:${height};` : undefined}
       />
-      <script type="module" src="/js/leaflet-map.js"></script>
+      <script type="module" src="/js/leaflet-map.js" />
     </>
   ) : (
     <div class="leaflet-map map-fallback">Sin mapa</div>
@@ -152,5 +153,30 @@ const markersJson = hasMarkers ? JSON.stringify(markers) : undefined;
   }
   :global(.leaflet-fullscreen-btn:hover) {
     background: #f4f4f4;
+  }
+
+  :global(.map-popup) {
+    display: block;
+    color: #111;
+    text-decoration: none;
+    font-family: var(--font-sans, "dino", sans-serif);
+    max-width: 180px;
+  }
+  :global(.map-popup img) {
+    width: 200px;
+    height: auto;
+    display: block;
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+  :global(.map-popup .popup-title) {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  :global(.leaflet-popup-content) {
+    margin: 6px 6px;
+  }
+  :global(.leaflet-popup-content-wrapper) {
+    border-radius: 4px;
   }
 </style>

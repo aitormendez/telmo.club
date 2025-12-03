@@ -62,18 +62,50 @@ function initMap(el) {
   });
 
   let errorCount = 0;
+  let usingFallback = false;
+
+  const useStamen = () => {
+    if (!map.hasLayer(stamenLayer)) {
+      stamenLayer.addTo(map);
+    }
+    if (map.hasLayer(osmLayer) && usingFallback) {
+      map.removeLayer(osmLayer);
+    }
+    usingFallback = false;
+  };
+
+  const useOsm = () => {
+    if (map.hasLayer(stamenLayer)) {
+      map.removeLayer(stamenLayer);
+    }
+    if (!map.hasLayer(osmLayer)) {
+      osmLayer.addTo(map);
+    }
+    usingFallback = true;
+  };
+
   stamenLayer.on("tileerror", () => {
-    // Con clave de Stadia evitamos hacer fallback (suele ser transitorio).
+    // Con clave de Stadia evitamos el fallback (suele ser transitorio).
     if (stadiaKey) return;
     errorCount += 1;
-    // Solo caer a OSM si fallan varios tiles (evita falsos positivos).
-    if (errorCount >= 3 && map.hasLayer(stamenLayer)) {
-      map.removeLayer(stamenLayer);
-      osmLayer.addTo(map);
+    // Solo caer a OSM si fallan varios tiles.
+    if (errorCount >= 3) {
+      useOsm();
     }
   });
 
-  stamenLayer.addTo(map);
+  // Si volvemos a un zoom soportado, reintentar stamen.
+  map.on("zoomend", () => {
+    if (stadiaKey) return;
+    const z = map.getZoom();
+    if (usingFallback && z <= 16) {
+      errorCount = 0;
+      useStamen();
+      stamenLayer.redraw();
+    }
+  });
+
+  useStamen();
 
   // Controles de zoom y pantalla completa.
   L.control.zoom({ position: "topright" }).addTo(map);
@@ -170,14 +202,38 @@ function initMap(el) {
     }).addTo(map);
   } else {
     const bounds = L.latLngBounds([]);
-    markers.forEach((m) => {
-      const marker = L.marker([m.lat, m.lng], {
-        icon: cross,
-        title: m.title || "",
-      });
-      marker.addTo(map);
-      bounds.extend([m.lat, m.lng]);
+  markers.forEach((m) => {
+    const marker = L.marker([m.lat, m.lng], {
+      icon: cross,
+      title: m.title || "",
     });
+
+    // Popup con thumbnail y título si existe.
+    if (m.thumbnail || m.title) {
+      const href = m.slug ? `/merz/${m.slug}` : null;
+      const img = m.thumbnail
+        ? `<img src="${m.thumbnail}" alt="${m.title || "Merk"}" />`
+        : "";
+      const title = m.title ? `<div class="popup-title">${m.title}</div>` : "";
+      const content = href
+        ? `<a class="map-popup" href="${href}">${img}${title}</a>`
+        : `<div class="map-popup">${img}${title}</div>`;
+      marker.bindPopup(content, { closeButton: false, autoPan: true });
+
+      marker.on("popupopen", (e) => {
+        const popupEl = e.popup.getElement();
+        const imgEl = popupEl?.querySelector("img");
+        if (imgEl) {
+          imgEl.addEventListener("load", () => {
+            e.popup.update();
+          });
+        }
+      });
+    }
+
+    marker.addTo(map);
+    bounds.extend([m.lat, m.lng]);
+  });
     if (bounds.isValid()) {
       map.fitBounds(bounds, { padding: [24, 24], maxZoom: 14 });
     }
