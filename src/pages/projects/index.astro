@@ -1,0 +1,33 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+
+const projects = await getCollection("projects");
+
+const ordered = projects
+  .filter((p) => p.data.title)
+  .sort((a, b) => {
+    const da = a.data.date ? a.data.date.getTime() : 0;
+    const db = b.data.date ? b.data.date.getTime() : 0;
+    return da - db;
+  });
+---
+
+<SiteLayout title="Projects | telmo">
+  <main class="px-5 sm:px-6 py-10 flex justify-center">
+    <div class="w-full max-w-3xl space-y-6">
+      {
+        ordered.map((p) => (
+          <div>
+            <a
+              href={`/projects/${p.slug}/`}
+              class="text-sky-700 hover:text-black text-2xl"
+            >
+              {p.data.title}
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </main>
+</SiteLayout>
