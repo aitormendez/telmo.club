@@ -1,9 +1,9 @@
 import L from "leaflet";
 
 const stadiaKey = import.meta.env.PUBLIC_STADIA_API_KEY;
-const stamenUrl = stadiaKey
-  ? `https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg?api_key=${stadiaKey}`
-  : "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg";
+const stamenBase =
+  "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg";
+const stamenUrl = stadiaKey ? `${stamenBase}?api_key=${stadiaKey}` : stamenBase;
 const stamenAttribution =
   'Map tiles by <a href="https://stamen.com" target="_blank" rel="noreferrer">Stamen Design</a>, ' +
   'under <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noreferrer">CC BY 3.0</a>. ' +
@@ -53,7 +53,7 @@ function initMap(el: HTMLElement) {
   const stamenLayer = L.tileLayer(stamenUrl, {
     attribution: stamenAttribution,
     maxZoom: 16,
-    subdomains: stadiaKey ? [] : "abcd",
+    subdomains: [],
     detectRetina: false,
     crossOrigin: true,
   });
