@@ -1,0 +1,104 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+import LeafletMap from "../../components/LeafletMap.astro";
+import VideoPlayer from "../../components/VideoPlayer.astro";
+
+export async function getStaticPaths() {
+  const merzEntries = await getCollection("merz");
+  return merzEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+
+const { Content } = await entry.render();
+const date = entry.data.date ? new Date(entry.data.date) : null;
+
+const monthYear = date
+  ? date.toLocaleDateString("es-ES", { month: "long", year: "numeric" })
+  : null;
+
+const dob = new Date("2013-02-16");
+const diffAge = (d: Date) => {
+  let months =
+    (d.getFullYear() - dob.getFullYear()) * 12 +
+    (d.getMonth() - dob.getMonth());
+  if (d.getDate() < dob.getDate()) months -= 1;
+  const years = Math.floor(months / 12);
+  const remMonths = months - years * 12;
+  return { years, months: remMonths };
+};
+
+const pluralize = (n: number, singular: string, plural: string) =>
+  `${n} ${n === 1 ? singular : plural}`;
+
+const age = date ? diffAge(date) : null;
+const hero = entry.data.thumbnail;
+const hasMap = entry.data.mapa && entry.data.mapa.lat && entry.data.mapa.lng;
+---
+
+<SiteLayout title={`${entry.data.title} | merz`}>
+  <main class="py-10">
+    <section
+      class="mx-auto max-w-6xl grid gap-10 px-5 sm:px-6 lg:grid-cols-[1.1fr_1.4fr] items-start"
+    >
+      <div class="flex flex-col gap-4">
+        <h1 class="text-4xl sm:text-5xl leading-tight">{entry.data.title}</h1>
+        <div class="space-y-1 text-lg">
+          {monthYear && <div>Recogido en {monthYear}</div>}
+          {
+            age && (
+              <div>
+                Telmo tiene {pluralize(age.years, "año", "años")} y{" "}
+                {pluralize(age.months, "mes", "meses")}
+              </div>
+            )
+          }
+          {entry.data.lugar && <div>{entry.data.lugar}</div>}
+        </div>
+        {
+          entry.data.tags?.length ? (
+            <div class="flex flex-wrap gap-2 text-sm text-sky-700 font-sans uppercase tracking-wide">
+              {entry.data.tags.map((tag) => (
+                <span class="px-2 py-1 bg-sky-50 rounded">{tag}</span>
+              ))}
+            </div>
+          ) : null
+        }
+      </div>
+
+      <div class="w-full flex flex-col gap-8">
+        {
+          hero ? (
+            <img
+              src={hero}
+              alt={entry.data.title}
+              class="w-full h-full max-h-[520px] object-cover border border-gray-200"
+              loading="lazy"
+            />
+          ) : null
+        }
+        <div class="text-lg leading-relaxed space-y-4">
+          <Content components={{ VideoPlayer }} />
+        </div>
+      </div>
+    </section>
+
+    {
+      hasMap && (
+        <section class="mt-12 mx-auto">
+          <LeafletMap
+            lat={entry.data.mapa?.lat}
+            lng={entry.data.mapa?.lng}
+            title={entry.data.title}
+            address={entry.data.mapa?.address}
+            zoom={14}
+          />
+        </section>
+      )
+    }
+  </main>
+</SiteLayout>
