@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+export async function getStaticPaths() {
+  const cuentos = await getCollection("cuentos");
+  return cuentos.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const date = entry.data.date;
+---
+
+<SiteLayout title={`${entry.data.title} | historias`}>
+  <main class="px-5 sm:px-6 py-10 flex justify-center">
+    <article class="w-full max-w-3xl space-y-4">
+      <div class="space-y-1">
+        <h1 class="text-4xl leading-tight">{entry.data.title}</h1>
+        {date && (
+          <p class="text-sm text-neutral-600">
+            {date.toISOString().slice(0, 10)}
+          </p>
+        )}
+      </div>
+      <div class="prose max-w-none">
+        <Content />
+      </div>
+    </article>
+  </main>
+</SiteLayout>

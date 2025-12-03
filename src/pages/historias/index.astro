@@ -1,0 +1,31 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+
+const cuentos = await getCollection("cuentos");
+
+const ordered = cuentos
+  .filter((c) => c.data.title)
+  .sort((a, b) => {
+    const da = a.data.date ? a.data.date.getTime() : 0;
+    const db = b.data.date ? b.data.date.getTime() : 0;
+    return da - db;
+  });
+---
+
+<SiteLayout title="Historias | telmo">
+  <main class="px-5 sm:px-6 py-10 flex justify-center">
+    <div class="w-full max-w-3xl space-y-6">
+      {ordered.map((c) => (
+        <div>
+          <a
+            href={`/historias/${c.slug}/`}
+            class="text-sky-700 hover:text-black text-xl"
+          >
+            {c.data.title}
+          </a>
+        </div>
+      ))}
+    </div>
+  </main>
+</SiteLayout>
