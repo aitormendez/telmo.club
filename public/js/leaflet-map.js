@@ -10,9 +10,11 @@ const stamenAttribution =
   'Data by <a href="https://openstreetmap.org" target="_blank" rel="noreferrer">OpenStreetMap</a>, ' +
   "under ODbL.";
 
-const osmUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+// Capa satélite de fallback (ESRI World Imagery).
+const osmUrl =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 const osmAttribution =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  'Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 
 function initMap(el) {
   const markersData = el.dataset.markers;
@@ -220,15 +222,6 @@ function initMap(el) {
         : `<div class="map-popup">${img}${title}</div>`;
       marker.bindPopup(content, { closeButton: false, autoPan: true });
 
-      marker.on("popupopen", (e) => {
-        const popupEl = e.popup.getElement();
-        const imgEl = popupEl?.querySelector("img");
-        if (imgEl) {
-          imgEl.addEventListener("load", () => {
-            e.popup.update();
-          });
-        }
-      });
     }
 
     marker.addTo(map);
