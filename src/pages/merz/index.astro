@@ -136,11 +136,17 @@ const normalizeThumb = (thumb: unknown) => {
       font-size: 1.6rem;
       font-style: italic;
       opacity: 0;
-      transition: opacity 150ms ease;
+      transition: opacity 500ms ease;
       pointer-events: none;
     }
     .tile:hover .tile-label {
       opacity: 1;
+    }
+    .tile img {
+      transition: opacity 1s ease;
+    }
+    .tile:hover img {
+      opacity: 0.5;
     }
     .tile.exit {
       opacity: 0;
