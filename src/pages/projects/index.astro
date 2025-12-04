@@ -1,33 +1,100 @@
 ---
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 
-const projects = await getCollection("projects");
-
-const ordered = projects
+const projects = (await getCollection("projects"))
   .filter((p) => p.data.title)
   .sort((a, b) => {
     const da = a.data.date ? a.data.date.getTime() : 0;
     const db = b.data.date ? b.data.date.getTime() : 0;
-    return da - db;
+    return db - da;
   });
+
+const normalizeThumb = (thumb: unknown) => {
+  if (!thumb) return { meta: undefined, url: undefined };
+  if (typeof thumb === "object" && thumb !== null && "src" in thumb) {
+    return { meta: thumb as any, url: (thumb as any).src as string };
+  }
+  if (typeof thumb === "string") {
+    if (thumb.startsWith("/")) return { meta: undefined, url: thumb };
+    try {
+      return { meta: undefined, url: Astro.resolve(thumb) };
+    } catch {
+      return { meta: undefined, url: thumb };
+    }
+  }
+  return { meta: undefined, url: undefined };
+};
 ---
 
-<SiteLayout title="Projects | telmo">
-  <main class="px-5 sm:px-6 py-10 flex justify-center">
-    <div class="w-full max-w-3xl space-y-6">
+<SiteLayout title="proyectos | telmo">
+  <main class="pt-6 pb-12">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-0 w-full"
+    >
       {
-        ordered.map((p) => (
-          <div>
-            <a
-              href={`/projects/${p.slug}/`}
-              class="text-sky-700 hover:text-black text-2xl"
-            >
-              {p.data.title}
-            </a>
-          </div>
-        ))
+        projects.map((entry) => {
+          const { meta, url } = normalizeThumb(entry.data.thumbnail);
+          const href = `/projects/${entry.slug}/`;
+          return (
+            <article class="project-tile">
+              <a href={href} class="block w-full h-full">
+                {meta ? (
+                  <Image
+                    src={meta}
+                    alt={entry.data.title}
+                    loading="lazy"
+                    class="thumb"
+                  />
+                ) : url ? (
+                  <img
+                    src={url}
+                    alt={entry.data.title}
+                    loading="lazy"
+                    class="thumb"
+                  />
+                ) : (
+                  <div class="thumb thumb-placeholder" />
+                )}
+                <div class="title">{entry.data.title}</div>
+              </a>
+            </article>
+          );
+        })
       }
     </div>
   </main>
+
+  <style>
+    .project-tile {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid transparent;
+      transition: border-color 150ms ease, background-color 150ms ease;
+    }
+    .project-tile:hover {
+      border-color: #ddd;
+      background: #fafafa;
+    }
+    .thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb-placeholder {
+      background: #f4f4f4;
+    }
+    .title {
+      padding: 10px 12px 14px;
+      font-size: 1.5rem;
+      color: #0ea5e9;
+      line-height: 1.3;
+      transition: color 150ms ease;
+    }
+    .project-tile:hover .title {
+      color: #000;
+    }
+  </style>
 </SiteLayout>

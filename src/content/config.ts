@@ -52,6 +52,19 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date().optional(),
+    thumbnail: z
+      .union([
+        z
+          .object({
+            src: z.string(),
+            width: z.number(),
+            height: z.number(),
+            format: z.string(),
+          })
+          .passthrough(),
+        z.string(),
+      ])
+      .optional(),
   }),
 });
 
