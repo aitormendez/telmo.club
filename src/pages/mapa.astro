@@ -4,13 +4,28 @@ import { getCollection } from "astro:content";
 import LeafletMap from "../components/LeafletMap.astro";
 
 const merzEntries = await getCollection("merz");
+const normalizeThumb = (thumb: unknown) => {
+  if (!thumb) return undefined;
+  if (typeof thumb === "object" && thumb !== null && "src" in thumb) {
+    return (thumb as any).src as string;
+  }
+  if (typeof thumb === "string") {
+    if (thumb.startsWith("/")) return thumb;
+    try {
+      return Astro.resolve(thumb);
+    } catch {
+      return thumb;
+    }
+  }
+  return undefined;
+};
 const markers = merzEntries
   .map((entry) => ({
     lat: entry.data.mapa?.lat,
     lng: entry.data.mapa?.lng,
     title: entry.data.title,
     slug: entry.slug,
-    thumbnail: entry.data.thumbnail,
+    thumbnail: normalizeThumb(entry.data.thumbnail),
   }))
   .filter(
     (

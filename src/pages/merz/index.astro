@@ -1,6 +1,7 @@
 ---
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 
 const merzEntries = (await getCollection("merz")).sort((a, b) => {
   const aDate = (a.data.date as Date | undefined)?.getTime?.() ?? 0;
@@ -15,6 +16,23 @@ for (const entry of merzEntries) {
 const tags = Array.from(tagSet).sort((a, b) =>
   a.localeCompare(b, "es", { sensitivity: "base" })
 );
+
+const normalizeThumb = (thumb: unknown) => {
+  if (!thumb) return { meta: undefined, url: undefined };
+  if (typeof thumb === "object" && thumb !== null && "src" in thumb) {
+    // ImageMetadata
+    return { meta: thumb as any, url: (thumb as any).src as string };
+  }
+  if (typeof thumb === "string") {
+    if (thumb.startsWith("/")) return { meta: undefined, url: thumb };
+    try {
+      return { meta: undefined, url: Astro.resolve(thumb) };
+    } catch {
+      return { meta: undefined, url: thumb };
+    }
+  }
+  return { meta: undefined, url: undefined };
+};
 ---
 
 <SiteLayout title="merz | telmo">
@@ -41,7 +59,7 @@ const tags = Array.from(tagSet).sort((a, b) =>
     >
       {
         merzEntries.map((entry) => {
-          const thumb = entry.data.thumbnail;
+          const { meta, url } = normalizeThumb(entry.data.thumbnail);
           const tagList = (entry.data.tags || []).join("|");
           const href = `/merz/${entry.slug}/`;
           return (
@@ -50,10 +68,20 @@ const tags = Array.from(tagSet).sort((a, b) =>
               data-tags={tagList}
               aria-label={entry.data.title}
             >
-              {thumb ? (
+              {meta ? (
+                <a href={href} class="block w-full h-full">
+                  <Image
+                    src={meta}
+                    alt={entry.data.title}
+                    loading="lazy"
+                    class="block w-full h-full object-cover"
+                  />
+                  <span class="tile-label">{entry.data.title}</span>
+                </a>
+              ) : url ? (
                 <a href={href} class="block w-full h-full">
                   <img
-                    src={thumb}
+                    src={url}
                     alt={entry.data.title}
                     loading="lazy"
                     class="block w-full h-full object-cover"

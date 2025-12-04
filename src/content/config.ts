@@ -14,7 +14,20 @@ const merz = defineCollection({
       })
       .optional(),
     tags: z.array(z.string()).default([]),
-    thumbnail: z.string().optional(), // ruta pública a la imagen
+    // Permitimos tanto ImageMetadata (en src/uploads/...) como rutas string existentes
+    thumbnail: z
+      .union([
+        z
+          .object({
+            src: z.string(),
+            width: z.number(),
+            height: z.number(),
+            format: z.string(),
+          })
+          .passthrough(),
+        z.string(),
+      ])
+      .optional(),
   }),
 });
 
