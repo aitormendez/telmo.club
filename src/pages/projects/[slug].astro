@@ -5,7 +5,12 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
   return projects.map((entry) => ({
-    params: { slug: entry.slug },
+    params: {
+      slug:
+        entry.id.replace(/^projects\//, "").split("/")[0] ||
+        entry.slug.split("/").pop() ||
+        entry.slug,
+    },
     props: { entry },
   }));
 }

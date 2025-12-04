@@ -1,10 +1,10 @@
 ---
 title: "Convertir señal analógica en digital con Raspberry Pi."
 date: "2021-01-22"
-thumbnail: "../../assets/uploads/projects/convertir-senal-analogica-a-digital/thumbnail.png"
+thumbnail: "./thumbnail.png"
 ---
 
-import VideoPlayer from "../../components/VideoPlayer.astro";
+import VideoPlayer from "../../../components/VideoPlayer.astro";
 
 La Raspberry Pi, a diferencia de otros microcontroladores, no trae de serie un convertidor de señal analógica. Si queremos leer e interpretar una señal de este tipo —muy frecuente en distintos tipos de sensores— hay que añadir un conversor A-D. En este caso el [MCP3008](https://cdn-shop.adafruit.com/datasheets/MCP3008.pdf).
 
@@ -33,9 +33,9 @@ Las conexiones entre la Rpi y el MCP3008 se hacen así (numeración GPIO en BCM)
 - MCP3008 DIN a Raspberry Pi pin 24
 - MCP3008 CS/SHDN a Raspberry Pi pin 25
 
-![Esquema de conexiones](../../assets/uploads/projects/convertir-senal-analogica-a-digital/Captura-de-pantalla-2021-01-22-20.18.03.png)
+![Esquema de conexiones](./Captura-de-pantalla-2021-01-22-20.18.03.png)
 
-![Esquema del MCP3008](../../assets/uploads/projects/convertir-senal-analogica-a-digital/MPC3008.png)
+![Esquema del MCP3008](./MPC3008.png)
 
 Para el script en python, he utilizado la librería [gpiozero](https://gpiozero.readthedocs.io/en/stable/). Con ella, el script no ocupa más que [siete líneas de código](https://gist.github.com/aitormendez/99cd779cb76fe6f40676ecaf84303a1d):
 

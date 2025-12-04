@@ -54,6 +54,13 @@ const historias = defineCollection({
 
 const projects = defineCollection({
   type: "content",
+  slug: ({ id }) => {
+    const parts = id
+      .replace(/^projects\//, "")
+      .replace(/\.mdx?$/, "")
+      .split("/");
+    return parts[0] || id.replace(/\.mdx?$/, "");
+  },
   schema: z.object({
     title: z.string(),
     date: z.coerce.date().optional(),

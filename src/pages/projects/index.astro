@@ -3,6 +3,11 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 
+const thumbGlob = import.meta.glob(
+  "../../content/projects/**/**/*.{jpg,jpeg,png,webp,gif}",
+  { eager: true, import: "default" }
+);
+
 const projects = (await getCollection("projects"))
   .filter((p) => p.data.title)
   .sort((a, b) => {
@@ -11,19 +16,46 @@ const projects = (await getCollection("projects"))
     return db - da;
   });
 
-const normalizeThumb = (thumb: unknown) => {
+const entrySlug = (entry) =>
+  entry.id.replace(/^projects\//, "").split("/")[0] ||
+  entry.slug.split("/").pop() ||
+  entry.slug;
+
+const entryFolder = (entry) => {
+  const parts = entry.id.replace(/^projects\//, "").split("/");
+  parts.pop();
+  return parts.join("/");
+};
+
+const normalizeThumb = (entry: any) => {
+  const thumb = entry.data.thumbnail;
   if (!thumb) return { meta: undefined, url: undefined };
+
   if (typeof thumb === "object" && thumb !== null && "src" in thumb) {
     return { meta: thumb as any, url: (thumb as any).src as string };
   }
+
   if (typeof thumb === "string") {
+    if (thumb.startsWith("./")) {
+      const key = `../../content/projects/${entryFolder(entry)}/${thumb.slice(2)}`;
+      const found = thumbGlob[key];
+      if (found) {
+        const url =
+          typeof found === "string"
+            ? found
+            : (found as any).src ?? (found as any).default ?? (found as any);
+        return { meta: undefined, url };
+      }
+      return { meta: undefined, url: undefined };
+    }
     if (thumb.startsWith("/")) return { meta: undefined, url: thumb };
     try {
       return { meta: undefined, url: Astro.resolve(thumb) };
     } catch {
-      return { meta: undefined, url: thumb };
+      return { meta: undefined, url: undefined };
     }
   }
+
   return { meta: undefined, url: undefined };
 };
 ---
@@ -35,8 +67,8 @@ const normalizeThumb = (thumb: unknown) => {
     >
       {
         projects.map((entry) => {
-          const { meta, url } = normalizeThumb(entry.data.thumbnail);
-          const href = `/projects/${entry.slug}/`;
+          const { meta, url } = normalizeThumb(entry);
+          const href = `/projects/${entrySlug(entry)}/`;
           return (
             <article class="project-tile">
               <a href={href} class="block w-full h-full">
