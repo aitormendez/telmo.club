@@ -4,6 +4,11 @@ import { getCollection } from "astro:content";
 
 const historias = await getCollection("historias");
 
+const entrySlug = (entry) =>
+  entry.id.replace(/^historias\//, "").split("/")[0] ||
+  entry.slug.split("/").pop() ||
+  entry.slug;
+
 const ordered = historias
   .filter((c) => c.data.title)
   .sort((a, b) => {
@@ -19,7 +24,7 @@ const ordered = historias
       {ordered.map((c) => (
         <div>
           <a
-            href={`/historias/${c.slug}/`}
+            href={`/historias/${entrySlug(c)}/`}
             class="text-sky-700 hover:text-black text-xl"
           >
             {c.data.title}
