@@ -1,7 +1,24 @@
 import { defineCollection, z } from "astro:content";
 
+const imageMeta = z
+  .object({
+    src: z.string(),
+    width: z.number(),
+    height: z.number(),
+    format: z.string(),
+  })
+  .passthrough();
+
 const merz = defineCollection({
   type: "content",
+  slug: ({ id }) => {
+    const parts = id
+      .replace(/^merz\//, "")
+      .replace(/\.mdx?$/, "")
+      .split("/");
+    // Usamos la carpeta como slug para evitar colisiones entre archivos
+    return parts[0] || id.replace(/\.mdx?$/, "");
+  },
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(), // ACF `fecha` formato Ymd
@@ -14,20 +31,8 @@ const merz = defineCollection({
       })
       .optional(),
     tags: z.array(z.string()).default([]),
-    // Permitimos tanto ImageMetadata (en src/uploads/...) como rutas string existentes
-    thumbnail: z
-      .union([
-        z
-          .object({
-            src: z.string(),
-            width: z.number(),
-            height: z.number(),
-            format: z.string(),
-          })
-          .passthrough(),
-        z.string(),
-      ])
-      .optional(),
+    // Permitimos tanto ImageMetadata como rutas string existentes
+    thumbnail: z.union([imageMeta, z.string()]).optional(),
   }),
 });
 
@@ -52,19 +57,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date().optional(),
-    thumbnail: z
-      .union([
-        z
-          .object({
-            src: z.string(),
-            width: z.number(),
-            height: z.number(),
-            format: z.string(),
-          })
-          .passthrough(),
-        z.string(),
-      ])
-      .optional(),
+    thumbnail: z.union([imageMeta, z.string()]).optional(),
   }),
 });
 

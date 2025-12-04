@@ -3,18 +3,45 @@ import SiteLayout from "../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 import LeafletMap from "../components/LeafletMap.astro";
 
+const thumbGlob = import.meta.glob(
+  "../content/merz/**/**/*.{jpg,jpeg,png,webp,gif}",
+  { eager: true, import: "default" }
+);
+
+const entrySlug = (entry) =>
+  entry.id.split("/").pop()?.replace(/\.mdx?$/, "") ||
+  entry.slug.split("/").pop() ||
+  entry.slug;
+
+const entryFolder = (entry) => {
+  const parts = entry.id.replace(/^merz\//, "").split("/");
+  parts.pop();
+  return parts.join("/");
+};
+
 const merzEntries = await getCollection("merz");
-const normalizeThumb = (thumb: unknown) => {
+const normalizeThumb = (entry) => {
+  const thumb = entry.data.thumbnail;
   if (!thumb) return undefined;
   if (typeof thumb === "object" && thumb !== null && "src" in thumb) {
     return (thumb as any).src as string;
   }
   if (typeof thumb === "string") {
+    if (thumb.startsWith("./")) {
+      const key = `../content/merz/${entryFolder(entry)}/${thumb.slice(2)}`;
+      const found = thumbGlob[key];
+      if (found) {
+        return typeof found === "string"
+          ? found
+          : (found as any).src ?? (found as any).default ?? (found as any);
+      }
+      return undefined;
+    }
     if (thumb.startsWith("/")) return thumb;
     try {
       return Astro.resolve(thumb);
     } catch {
-      return thumb;
+      return undefined;
     }
   }
   return undefined;
@@ -24,8 +51,8 @@ const markers = merzEntries
     lat: entry.data.mapa?.lat,
     lng: entry.data.mapa?.lng,
     title: entry.data.title,
-    slug: entry.slug,
-    thumbnail: normalizeThumb(entry.data.thumbnail),
+    slug: entrySlug(entry),
+    thumbnail: normalizeThumb(entry),
   }))
   .filter(
     (

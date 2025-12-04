@@ -3,11 +3,27 @@ import SiteLayout from "../../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 
+const thumbGlob = import.meta.glob(
+  "../../content/merz/**/**/*.{jpg,jpeg,png,webp,gif}",
+  { eager: true, import: "default" }
+);
+
 const merzEntries = (await getCollection("merz")).sort((a, b) => {
   const aDate = (a.data.date as Date | undefined)?.getTime?.() ?? 0;
   const bDate = (b.data.date as Date | undefined)?.getTime?.() ?? 0;
   return bDate - aDate;
 });
+
+const entrySlug = (entry) =>
+  entry.id.replace(/^merz\//, "").split("/")[0] ||
+  entry.slug.split("/").pop() ||
+  entry.slug;
+
+const entryFolder = (entry) => {
+  const parts = entry.id.replace(/^merz\//, "").split("/");
+  parts.pop(); // remove filename
+  return parts.join("/");
+};
 
 const tagSet = new Set<string>();
 for (const entry of merzEntries) {
@@ -17,20 +33,35 @@ const tags = Array.from(tagSet).sort((a, b) =>
   a.localeCompare(b, "es", { sensitivity: "base" })
 );
 
-const normalizeThumb = (thumb: unknown) => {
+const resolveThumb = (entry) => {
+  const thumb = entry.data.thumbnail;
   if (!thumb) return { meta: undefined, url: undefined };
+
   if (typeof thumb === "object" && thumb !== null && "src" in thumb) {
-    // ImageMetadata
     return { meta: thumb as any, url: (thumb as any).src as string };
   }
+
   if (typeof thumb === "string") {
+    if (thumb.startsWith("./")) {
+      const key = `../../content/merz/${entryFolder(entry)}/${thumb.slice(2)}`;
+      const found = thumbGlob[key];
+      if (found) {
+        const url =
+          typeof found === "string"
+            ? found
+            : (found as any).src ?? (found as any).default ?? (found as any);
+        return { meta: undefined, url };
+      }
+      return { meta: undefined, url: undefined };
+    }
     if (thumb.startsWith("/")) return { meta: undefined, url: thumb };
     try {
       return { meta: undefined, url: Astro.resolve(thumb) };
     } catch {
-      return { meta: undefined, url: thumb };
+      return { meta: undefined, url: undefined };
     }
   }
+
   return { meta: undefined, url: undefined };
 };
 ---
@@ -59,9 +90,10 @@ const normalizeThumb = (thumb: unknown) => {
     >
       {
         merzEntries.map((entry) => {
-          const { meta, url } = normalizeThumb(entry.data.thumbnail);
+          const { meta, url } = resolveThumb(entry);
           const tagList = (entry.data.tags || []).join("|");
-          const href = `/merz/${entry.slug}/`;
+          const slug = entrySlug(entry);
+          const href = `/merz/${slug}/`;
           return (
             <article
               class="tile"
