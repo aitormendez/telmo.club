@@ -51,7 +51,7 @@ const resolveThumb = (entry: MerzEntry) => {
         const url =
           typeof found === "string"
             ? found
-            : (found as any).src ?? (found as any).default ?? (found as any);
+            : ((found as any).src ?? (found as any).default ?? (found as any));
         return { meta: undefined, url };
       }
       return { meta: undefined, url: undefined };
@@ -169,7 +169,6 @@ const resolveThumb = (entry: MerzEntry) => {
       padding: 6px 8px;
       font-size: 1.6rem;
       font-style: italic;
-      opacity: 0;
       transition: opacity 500ms ease;
       pointer-events: none;
     }
@@ -200,16 +199,16 @@ const resolveThumb = (entry: MerzEntry) => {
     const buttons = Array.from(
       document.querySelectorAll<HTMLButtonElement>("[data-filter]")
     );
-    let currentFilter = "all";
-    const hideTimers = new WeakMap();
+    let currentFilter: string = "all";
+    const hideTimers = new WeakMap<HTMLElement, number>();
 
-    const parseTags = (el) =>
+    const parseTags = (el: HTMLElement) =>
       (el.dataset.tags || "")
         .split("|")
         .map((t) => t.trim())
         .filter(Boolean);
 
-    function applyFilter(filter) {
+    function applyFilter(filter: string) {
       if (filter === currentFilter) return;
       currentFilter = filter;
       buttons.forEach((btn) => {
