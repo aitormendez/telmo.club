@@ -120,13 +120,11 @@ const resolveThumb = (entry: MerzEntry) => {
                     loading="lazy"
                     class="block w-full h-full object-cover"
                   />
-                  <span class="tile-label">{entry.data.title}</span>
+                  <span class="tile-label text-black">{entry.data.title}</span>
                 </a>
               ) : (
                 <div class="flex items-center justify-center w-full h-full bg-gray-100">
-                  <span class="text-center font-semibold">
-                    {entry.data.title}
-                  </span>
+                  <span class="text-center">{entry.data.title}</span>
                 </div>
               )}
             </article>

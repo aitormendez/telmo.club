@@ -1,6 +1,6 @@
 ---
 import SiteLayout from "../../layouts/SiteLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 import LeafletMap from "../../components/LeafletMap.astro";
 import VideoPlayer from "../../components/VideoPlayer.astro";
@@ -10,7 +10,9 @@ const thumbGlob = import.meta.glob(
   { eager: true, import: "default" }
 );
 
-const entryFolder = (entry) => {
+type MerzEntry = CollectionEntry<"merz">;
+
+const entryFolder = (entry: MerzEntry) => {
   const parts = entry.id.replace(/^merz\//, "").split("/");
   parts.pop();
   return parts.join("/");
@@ -21,21 +23,27 @@ export async function getStaticPaths() {
   return merzEntries.map((entry) => ({
     params: {
       slug:
-        entry.id.split("/").pop()?.replace(/\.mdx?$/, "") ||
+        entry.id
+          .split("/")
+          .pop()
+          ?.replace(/\.mdx?$/, "") ||
         entry.slug.split("/").pop() ||
         entry.slug,
     },
     props: {
       entry,
       slug:
-        entry.id.split("/").pop()?.replace(/\.mdx?$/, "") ||
+        entry.id
+          .split("/")
+          .pop()
+          ?.replace(/\.mdx?$/, "") ||
         entry.slug.split("/").pop() ||
         entry.slug,
     },
   }));
 }
 
-const { entry, slug } = Astro.props;
+const { entry, slug } = Astro.props as { entry: MerzEntry; slug: string };
 
 const { Content } = await entry.render();
 const date = entry.data.date ? new Date(entry.data.date) : null;
@@ -59,7 +67,7 @@ const pluralize = (n: number, singular: string, plural: string) =>
   `${n} ${n === 1 ? singular : plural}`;
 
 const age = date ? diffAge(date) : null;
-const normalizeThumb = (entry) => {
+const normalizeThumb = (entry: MerzEntry) => {
   const thumb = entry.data.thumbnail;
   if (!thumb) return { meta: undefined, url: undefined };
 
@@ -74,17 +82,13 @@ const normalizeThumb = (entry) => {
         const url =
           typeof found === "string"
             ? found
-            : (found as any).src ?? (found as any).default ?? (found as any);
+            : ((found as any).src ?? (found as any).default ?? (found as any));
         return { meta: undefined, url };
       }
       return { meta: undefined, url: undefined };
     }
     if (thumb.startsWith("/")) return { meta: undefined, url: thumb };
-    try {
-      return { meta: undefined, url: Astro.resolve(thumb) };
-    } catch {
-      return { meta: undefined, url: undefined };
-    }
+    return { meta: undefined, url: thumb };
   }
   return { meta: undefined, url: undefined };
 };
@@ -128,14 +132,14 @@ const hasMap = entry.data.mapa && entry.data.mapa.lat && entry.data.mapa.lng;
             <Image
               src={heroMeta}
               alt={entry.data.title}
-              class="w-full h-full max-h-[520px] object-cover border border-gray-200"
+              class="w-full h-full max-h-[520px] object-cover"
               loading="lazy"
             />
           ) : heroUrl ? (
             <img
               src={heroUrl}
               alt={entry.data.title}
-              class="w-full h-full max-h-[520px] object-cover border border-gray-200"
+              class="w-full h-full max-h-[520px] object-cover"
               loading="lazy"
             />
           ) : null
