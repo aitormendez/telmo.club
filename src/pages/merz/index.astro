@@ -194,8 +194,12 @@ const resolveThumb = (entry: MerzEntry) => {
 
   <script>
     const FILTER_ANIM_MS = 200;
-    const tiles = Array.from(document.querySelectorAll("[data-tags]"));
-    const buttons = Array.from(document.querySelectorAll("[data-filter]"));
+    const tiles = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-tags]")
+    );
+    const buttons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>("[data-filter]")
+    );
     let currentFilter = "all";
     const hideTimers = new WeakMap();
 
