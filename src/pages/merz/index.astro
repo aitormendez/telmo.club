@@ -1,6 +1,6 @@
 ---
 import SiteLayout from "../../layouts/SiteLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import { Image } from "astro:assets";
 
 const thumbGlob = import.meta.glob(
@@ -8,18 +8,20 @@ const thumbGlob = import.meta.glob(
   { eager: true, import: "default" }
 );
 
+type MerzEntry = CollectionEntry<"merz">;
+
 const merzEntries = (await getCollection("merz")).sort((a, b) => {
   const aDate = (a.data.date as Date | undefined)?.getTime?.() ?? 0;
   const bDate = (b.data.date as Date | undefined)?.getTime?.() ?? 0;
   return bDate - aDate;
-});
+}) as MerzEntry[];
 
-const entrySlug = (entry) =>
+const entrySlug = (entry: MerzEntry) =>
   entry.id.replace(/^merz\//, "").split("/")[0] ||
   entry.slug.split("/").pop() ||
   entry.slug;
 
-const entryFolder = (entry) => {
+const entryFolder = (entry: MerzEntry) => {
   const parts = entry.id.replace(/^merz\//, "").split("/");
   parts.pop(); // remove filename
   return parts.join("/");
@@ -33,7 +35,7 @@ const tags = Array.from(tagSet).sort((a, b) =>
   a.localeCompare(b, "es", { sensitivity: "base" })
 );
 
-const resolveThumb = (entry) => {
+const resolveThumb = (entry: MerzEntry) => {
   const thumb = entry.data.thumbnail;
   if (!thumb) return { meta: undefined, url: undefined };
 
